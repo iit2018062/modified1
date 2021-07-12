@@ -11,7 +11,7 @@ export default function LinkModel({ link }) {
 			midA={midA}
 			midB={midB}
 			// color="white"
-			color={link.color || "white"}
+			color={link.color || "yellow"}
 			lineWidth={0.5}
 			dashed={false}
 			dashScale={2}

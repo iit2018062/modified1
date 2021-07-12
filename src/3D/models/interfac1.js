@@ -1,13 +1,13 @@
-import React, {useState, useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
-import img from "./interface.png";
-import * as THREE from "three";
+import React, { useRef } from "react";
+//import {  useLoader } from "@react-three/fiber";
+//import img from "./interface.png";
+//import * as THREE from "three";
 import RenderAnnotations from "./Annotaions";
 
 export default function InterfaceModel({ node ,setHoverNode1,focusNodeLevel2}) {
 	const group = useRef();
 	const mesh = useRef();
-	var boxTexture = useLoader(THREE.TextureLoader, img);
+	//var boxTexture = useLoader(THREE.TextureLoader, img);
 	return (
 		<group
 			ref={group}
@@ -36,7 +36,6 @@ export default function InterfaceModel({ node ,setHoverNode1,focusNodeLevel2}) {
 					<meshStandardMaterial
 						attachArray="material"
 					color={"white"}
-						map={boxTexture}
 					/>
 					<meshStandardMaterial
 						attachArray="material"

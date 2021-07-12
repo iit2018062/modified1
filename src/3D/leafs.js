@@ -1,7 +1,7 @@
 import React from "react";
 import CautionModel from "./models/Caution";
 import LeafModel from "./models/Leaf";
-import TickModel from "./models/Tick";
+
 
 export default function RenderLeafs({
 	leafs,
@@ -12,15 +12,15 @@ export default function RenderLeafs({
 	level2leaf,
 }) {
 	var counter=0;
-	if(level2leaf!==undefined && level2leaf.length!==0 && selectedNode!==null && selectedNode.data.nodeRole=="spine")
-	{console.log(level2leaf);
+	if(level2leaf!==undefined && level2leaf.length!==0 && selectedNode!==null && selectedNode.data.nodeRole==="spine")
+	{//console.log(level2leaf);
 		leafs = level2leaf;
 	}
 	return (
 		<group>
 			{leafs.map((node) => {
 				const score = node.data.anomalyScore;
-				const tick = score < 20 && score >= 0;
+				//const tick = score < 20 && score >= 0;
 				const caution = score > 20 && score <= 100;
 				counter++;
 				if (

@@ -1,4 +1,4 @@
-import { Grid, jssPreset } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import Main3DComp from "./3D";
 import SideBarComp from "./UI/sideBar";
@@ -104,10 +104,9 @@ function fetchlevel3(epg) {
 				var newInterfaceLinks = [];
 				var newEndpoints = [];
 				var newVms = [];
-				var newLeafs = [];
 				var maxNodesInLevel = 14;
 				var nodesLeft = array.length;
-				var theta, radius=4, maxRadius, myObj, x, z;
+				var theta, radius=4, myObj, x, z;
 				var y = 5;
 				//var counter = 0;
 				setisinterface(true);
@@ -127,7 +126,7 @@ function fetchlevel3(epg) {
 					counter += 1;
 
 					if (counter === maxNodesInLevel) {
-						maxRadius = radius;
+						//maxRadius = radius;
 						nodesLeft -= maxNodesInLevel;
 						counter = 0;
 						maxNodesInLevel += 5;
@@ -139,11 +138,6 @@ function fetchlevel3(epg) {
 						.map((node) => node.data.nodeName)
 						.indexOf(array[i].nodeName);
 					if (nodeIndex >= 0 && nodeIndex < tempCombined.length) {
-						//varnode.push(tempCombined[nodeIndex]);
-						//counter++;
-						// newDefaultLoc[0] += tempCombined[nodeIndex].position[0];
-						// newDefaultLoc[1] += tempCombined[nodeIndex].position[1];
-						// newDefaultLoc[2] += tempCombined[nodeIndex].position[2];
 						if (tempCombined[nodeIndex].data.nodeRole === "spine") {
 							spine.push(tempCombined[nodeIndex]);
 						} else if (
@@ -236,25 +230,10 @@ function fetchlevel3(epg) {
 		setInterfaceLink(newInterfaceLinks);
 		setEndpoints(newEndpoints);
 		setEpg(newVms);
-				
-				// newDefaultLoc[0] /= counter;
-				// newDefaultLoc[1] = 10;
-				// newDefaultLoc[2] /= counter;
-				//console.log(newDefaultLoc);
-				//set default location
-
 				setlevel3details(epgdetails);
 				setlevel3nodes(varnode);
 				setlevel3spine(spine);
 				setlevel3leaf(leaf);
-
-				// setDefaultCameraLookAt(newDefaultLoc);
-				// counter *= 3; //distance of camera from central point
-				// setDefaultCameraLoc([
-				// 	newDefaultLoc[0] + counter,
-				// 	newDefaultLoc[1] + counter,
-				// 	newDefaultLoc[2] + counter,
-				// ]);
 				
 			})
 			.catch((error) => {
@@ -266,27 +245,7 @@ function fetchlevel3(epg) {
 	// 	resetCamera();
 	// 	console.log({defaultCameraLoc, defaultCameraLookAt})
 	// }, [defaultCameraLoc, defaultCameraLookAt])
-	function focuslevel2leaf(nodeData)
-	{
-		const nodeLoc = new THREE.Vector3(
-			nodeData.position[0],
-			nodeData.position[1],
-			nodeData.position[2]
-		);
-
-		const cameraLoc = new THREE.Vector3();
-		cameraLoc.addVectors(nodeLoc, new THREE.Vector3(20, 20, 20));
-		setTargetPosition(cameraLoc);
-
-		setTargetLookAt([
-			nodeData.position[0],
-			nodeData.position[1],
-			nodeData.position[2],
-		]);
-
-
-	}
-
+	
 	function focusNodeLevel1(nodeData) {
 		if (nodeData === undefined) return;
 		if(level3===true)
@@ -296,7 +255,7 @@ function fetchlevel3(epg) {
 		setInterfaceLink([]);
 		setlevel2spine([]);
 		setlevel2leaf([]);
-		console.log(nodeData);
+		//console.log(nodeData);
 		fetchData2(nodeData);
 		
 
@@ -379,6 +338,9 @@ function fetchlevel3(epg) {
 						nodeData.position[2] + radius * Math.sin(theta * i);
 					const myObj = {
 						data: input[i],
+						radius:radius,
+						theta:(theta*i),
+						centre:[nodeData.position[0],nodeData.position[2]],
 						position: [x, y, z],
 					};
 					newInterfaceLinks.push({
@@ -439,7 +401,7 @@ function fetchlevel3(epg) {
 				}
 				//reamining spine links
 				var newSpines=[];
-				var  newLeaf = [];
+				//var  newLeaf = [];
 				var newleaf =[];
 				const tempCombined = [...spines, ...leafs];
 				if (
@@ -477,12 +439,7 @@ function fetchlevel3(epg) {
 				else if(nodeData.data.nodeRole === "spine" && nodeData.data.fabricLinks !== undefined)
 				{
 					setlevel2leaf([]);
-					
 					newSpines.push(nodeData);
-					//newInterfaces
-					// var counter=0;
-					// var r = nodeData.data.fabricLinks.length/2;
-					// var angle = (2*Math.PI)/(nodeData.data.fabricLinks.length);
 					for (let i in nodeData.data.fabricLinks) {
 						const node2 =nodeData.data.fabricLinks[i].neighbourNode;
 
@@ -490,32 +447,25 @@ function fetchlevel3(epg) {
 						const targetIndex = tempCombined
 							.map((node) => node.data.nodeName)
 							.indexOf(node2);
-					    // var x1 = nodeData.position[0] + r * Math.cos(angle * i);
-						// var z1 = nodeData.position[2] + radius * Math.sin(angle * i);
 						const neighborinterface = nodeData.data.fabricLinks[i].interface;
-					// 	var location=[];
-					// 	if(neighborinterface!==undefined)
-					// 	{
-					// 	for(var j in newInterfaces )
-					// 	{
-                    //       if(neighborinterface==newInterfaces[j].data.sourceNameLabel) 
-					// 	  {
-					// 		  location  = newInterfaces[j].position;
-					// 	  }
-					// 	}
-					// }
+						const interfaceindex = newInterfaces
+							.map((node) => node.data.sourceNameLabel)
+							.indexOf(neighborinterface);
+					if(interfaceindex>=0 && interfaceindex<newInterfaces.length){
 						const myobject = {
 							data:tempCombined[targetIndex].data,
 							leafinterface: nodeData.data.fabricLinks[i].neighbourInterface,
 							spineinterface:nodeData.data.fabricLinks[i].interface,
-							position:tempCombined[targetIndex].position,
+							position:[newInterfaces[interfaceindex].centre[0]+(newInterfaces[interfaceindex].radius+4)*(Math.cos(newInterfaces[interfaceindex].theta)),newInterfaces[interfaceindex].position[1],newInterfaces[interfaceindex].centre[1]+(newInterfaces[interfaceindex].radius+4)*(Math.sin(newInterfaces[interfaceindex].theta))],
 						};
 						newleaf.push(myobject);
-						// newInterfaceLinks.push({
-						// 	src: tempCombined[targetIndex].position,
-						// 	target: location,
-						// 	id: `${nodeData.data.fabricLinks.neighbourNode}${nodeData.position}${tempCombined[targetIndex].position}`,
-						// });
+						newInterfaceLinks.push({
+							color:"yellow",
+							src: [newInterfaces[interfaceindex].centre[0]+(newInterfaces[interfaceindex].radius+4)*(Math.cos(newInterfaces[interfaceindex].theta)),newInterfaces[interfaceindex].position[1],newInterfaces[interfaceindex].centre[1]+(newInterfaces[interfaceindex].radius+4)*(Math.sin(newInterfaces[interfaceindex].theta))],
+							target: newInterfaces[interfaceindex].position,
+							id: `${newInterfaces[interfaceindex].position[2]}${nodeData.data.fabricLinks.neighbourNode}${nodeData.position}${tempCombined[targetIndex].position}`,
+						});
+					}
 					}
 
 				}

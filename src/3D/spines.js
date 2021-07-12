@@ -1,7 +1,7 @@
 import React from "react";
 import CautionModel from "./models/Caution";
 import SpineModel from "./models/Spine";
-import TickModel from "./models/Tick";
+
 
 export default function RenderSpines({
 	spines,
@@ -24,7 +24,7 @@ export default function RenderSpines({
 			
 			{spines.map((node) => {
 				const score = node.data.anomalyScore;
-				const tick = score < 20 && score >= 0;
+				//const tick = score < 20 && score >= 0;
 				const caution = score > 20 && score <= 100;
 				var flag  = 0;
 				if (

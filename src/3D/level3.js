@@ -1,7 +1,5 @@
 import React from "react";
-import CautionModel from "./models/Caution";
 import LeafModel from "./models/Leaf";
-import TickModel from "./models/Tick";
 import SpineModel from "./models/Spine";
 
 export default function Renderlevel3({
